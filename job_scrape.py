@@ -7,15 +7,15 @@ import os
 import re
 
 # Access helper functions
-from addresses import extract_addresses
-from application_deadline import extract_expiration_date
-from contract_type import extract_type
-from expected_tech import extract_expected_technologies
-from job_level import extract_level
-from job_requirements import extract_requirements
-from job_responsibilities import extract_responsibilities
-from salary_info import extract_salary_details
-from save_results_adls import save_results
+from helper_functions.addresses import extract_addresses
+from helper_functions.application_deadline import extract_expiration_date
+from helper_functions.contract_type import extract_type
+from helper_functions.expected_tech import extract_expected_technologies
+from helper_functions.job_level import extract_level
+from helper_functions.job_requirements import extract_requirements
+from helper_functions.job_responsibilities import extract_responsibilities
+from helper_functions.salary_info import extract_salary_details
+from helper_functions.save_results_adls import save_results
 
 # Verify Azure credentials are available
 required_env_vars = ["TENANT_ID", "CLIENT_ID", "CLIENT_SECRET", "STORAGE_ACCOUNT_NAME", "CONTAINER_NAME"]
