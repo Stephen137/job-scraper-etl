@@ -1,0 +1,53 @@
+# ================================================================
+# Job Scraper ETL - Python Dependencies
+# ================================================================
+# Install with: pip install -r requirements.txt
+#
+# Core Production Dependencies:
+# - Web scraping with Playwright and BeautifulSoup
+# - Azure storage and authentication
+# - Data processing
+# 
+# Development Dependencies (optional):
+# - Testing with pytest
+# - Code formatting with black
+# - Linting with flake8
+# ================================================================
+
+# ================================================================
+# WEB SCRAPING (Core)
+# ================================================================
+beautifulsoup4==4.14.2
+playwright==1.56.0
+urllib3==2.5.0
+
+# ================================================================
+# AZURE STORAGE & AUTHENTICATION (Core)
+# ================================================================
+azure-identity==1.25.1
+azure-storage-blob==12.27.1
+azure-storage-file-datalake==12.22.0
+azure-core==1.36.0
+
+# ================================================================
+# CONFIGURATION & ENVIRONMENT
+# ================================================================
+python-dotenv==1.0.1
+
+# ================================================================
+# DATA PROCESSING
+# ================================================================
+pandas==2.3.3
+numpy==2.3.4
+
+# ================================================================
+# HTTP & NETWORK
+# ================================================================
+requests==2.32.5
+
+# ================================================================
+# DEVELOPMENT & TESTING (Optional - uncomment if needed)
+# ================================================================
+# pytest==7.4.3
+# black==23.11.0
+# flake8==6.1.0
