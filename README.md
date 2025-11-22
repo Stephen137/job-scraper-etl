@@ -37,6 +37,8 @@ job-scraper-etl/
 │   ├── 01_bronze_load.py         # Bronze layer (raw data ingestion)
 │   ├── 02_silver_cleaning.py     # Silver layer (validation & cleaning)
 │   └── 03_gold_aggregations.sql  # Gold layer (analytics views)
+|   └── 04_jobs_expiring_soon.sql # Gold layer (jobs expiring within 3 days)
+|   
 ├── tests/
 │   └── test_helper_functions.py  # 35+ pytest tests
 ├── docs/
@@ -85,7 +87,7 @@ python job_scrape.py
    CREATE SCHEMA IF NOT EXISTS jobscrape.silver;
    CREATE SCHEMA IF NOT EXISTS jobscrape.gold;
    ```
-3. **Upload Notebooks**: `notebooks/01_*.py`, `02_*.py`, `03_*.sql`
+3. **Upload Notebooks**: `notebooks/01_*.py`, `02_*.py`, `03_*.sql`, `04_*.sql`
 4. **Set Up File Arrival Trigger**: 
    - Path: `/Volumes/jobscrape/landing/jobscrape_data/`
    - Pattern: `*.csv`
