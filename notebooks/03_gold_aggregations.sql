@@ -230,6 +230,37 @@ SELECT * FROM v_market_heatmap;
 
 -- COMMAND ----------
 
+-- ===== VIEW 11: Job Posting Tracking =====
+-- Monitor which jobs have been recently posted
+
+CREATE OR REPLACE VIEW v_jobs_just_posted AS
+SELECT 
+    company_name,
+    days_since_posted,
+    job_title,
+    min_salary,
+    max_salary,
+    expected_technologies,
+    responsibilities,
+    requirements,
+    location,
+    work_mode,
+    contract_type,
+    job_url,
+    CASE 
+      WHEN days_since_posted < 1 THEN 'Be an early applicant - posted Today!'
+      WHEN days_since_posted <=3 THEN 'Be an early applicant - only 1-3 days old!'
+      WHEN days_since_posted <= 7 THEN 'Get in now  - less than a week old!'
+      WHEN days_since_posted <= 14 THEN 'Been over a week now - get your skates on!'
+      ELSE 'More than 2 weeks old - what are you waiting for?'
+    END as posting_status
+FROM jobscrape.silver.jobs_cleaned
+ORDER BY days_since_posted ASC;
+
+SELECT * FROM v_jobs_just_posted LIMIT 20;
+
+-- COMMAND ----------
+
 -- ===== SUMMARY =====
 -- Display all gold layer tables created
 
