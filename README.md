@@ -187,9 +187,9 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 👤 Author
 
-[Stephen Barrie](https://github.com/Stephen137)
-- GitHub: [@Stephen137](https://github.com/Stephen137)
-- LinkedIn: [Your LinkedIn]
+Stephen Barrie
+- [GitHub](https://github.com/Stephen137)
+- [LinkedIn](https://linkedin.com/in/sjbarrie)
 
 ## 🎯 Next Steps
 
