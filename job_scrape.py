@@ -9,6 +9,7 @@ import re
 # Access helper functions
 from helper_functions.addresses import extract_addresses
 from helper_functions.application_deadline import extract_expiration_date
+from helper_functions.job_posting_date import extract_job_posting_date
 from helper_functions.contract_type import extract_type
 from helper_functions.expected_tech import extract_expected_technologies
 from helper_functions.job_level import extract_level
@@ -116,6 +117,7 @@ def scrape_theprotocol_jobs(max_pages: int = 5, delay: float = 1.0):
 
                     # Initialize variables with default values
                     expiration_date = None
+                    job_posting_date = None
                     job_level = None
                     contract_type = None
                     salary_details = {'remuneration': None, 'frequency': None, 'gross_or_net': None}
@@ -131,6 +133,7 @@ def scrape_theprotocol_jobs(max_pages: int = 5, delay: float = 1.0):
                             
                             # Extract all data in one go - PASS THE PAGE OBJECT to each function
                             expiration_date = extract_expiration_date(page)
+                            job_posting_date = extract_job_posting_date(page)
                             job_level = extract_level(page)
                             contract_type = extract_type(page)
                             salary_details = extract_salary_details(page)
@@ -157,6 +160,7 @@ def scrape_theprotocol_jobs(max_pages: int = 5, delay: float = 1.0):
                         "job_listing_id": job_listing_id,
                         "job_title": job_title_tag.get_text(strip=True) if job_title_tag else None,
                         "expiration_date": expiration_date,
+                        "job_posting_date": job_posting_date,
                         "company_name": company_tag.get_text(strip=True) if company_tag else None,
                         "location": location_tag.get_text(strip=True) if location_tag else None,
                         "address_1": addresses['address_1'],
