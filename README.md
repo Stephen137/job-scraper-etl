@@ -1,518 +1,214 @@
-# Complete GitHub Setup Guide: Job Scraper ETL
+# Job Scraper ETL Pipeline
 
-Complete step-by-step instructions from creating a GitHub repo to your first commit and push.
+[![Tests](https://github.com/Stephen137/job-scraper-etl/actions/workflows/tests.yml/badge.svg)](https://github.com/Stephen137/job-scraper-etl/actions/workflows/tests.yml)
 
----
+**Production-grade ETL pipeline** that automates job market intelligence collection and analysis. Built a full-stack data engineering solution combining local web scraping with cloud-based data warehouse transformation.
 
-## Step 1: Create Repository on GitHub
+## 🚀 Quick Overview
 
-### 1.1 Go to GitHub
-- Open https://github.com in your browser
-- Click the **+** icon in the top right → **New repository**
-
-### 1.2 Configure Repository
-- **Repository name**: `job-scraper-etl`
-- **Description**: `Production-grade ETL pipeline for scraping TheProtocol.it job listings with Databricks`
-- **Visibility**: Choose **Public** (for portfolio) or **Private** (for confidential)
-- **Initialize this repository with**:
-  - ✅ Add a README file
-  - ✅ Add .gitignore (select **Python**)
-  - ✅ Choose a license (**MIT** recommended)
-
-### 1.3 Create Repository
-Click **Create repository**
-
-You now have an empty repo on GitHub! ✅
-
----
-
-## Step 2: Clone Repository Locally
-
-### 2.1 Get Repository URL
-- On your GitHub repo page, click the green **Code** button
-- Copy the HTTPS URL (e.g., `https://github.com/yourusername/job-scraper-etl.git`)
-
-### 2.2 Open Terminal/Command Prompt
-```bash
-# Navigate to where you want to store your project
-cd ~/Documents  # or any preferred location
-
-# Clone the repository
-git clone https://github.com/yourusername/job-scraper-etl.git
-
-# Navigate into the project
-cd job-scraper-etl
+```
+Local Machine → ADLS Landing Zone → Databricks → Analytics Layer
+(Web Scraper)   (Cloud Storage)    (Transform)   (Gold Views)
 ```
 
-Verify you're in the right location:
-```bash
-pwd  # On Mac/Linux - shows current path
-cd   # On Windows - shows current path
-ls   # List files in directory
+## 📋 Key Features
+
+- **Web Scraper**: Playwright-based scraper handling dynamic content, pagination, and error recovery
+- **Data Validation**: Comprehensive quality checks with dropped records logging
+- **Medallion Architecture**: Bronze (raw) → Silver (clean) → Gold (analytics) layers
+- **Infrastructure-as-Code**: Reproducible setup with environment-based configuration
+- **Automated Testing**: 35+ pytest tests with GitHub Actions CI/CD
+- **Production Ready**: Comprehensive error handling, logging, and reconciliation checks
+
+## 🛠 Tech Stack
+
+- **Local**: Python, Playwright, BeautifulSoup, Pandas
+- **Cloud**: Azure ADLS, Databricks, Delta Lake, PySpark, SQL
+- **DevOps**: GitHub Actions, Bash, Git
+- **Testing**: Pytest, pytest-cov, Mock
+
+## 📁 Project Structure
+
 ```
-
-You should see: `README.md`, `.gitignore`, `LICENSE`
-
----
-
-## Step 3: Create Project Structure from Command Line
-
-### 3.1 Create Directories
-```bash
-# Create main directories
-mkdir -p helper_functions
-mkdir -p notebooks
-mkdir -p config
-mkdir -p docs
-mkdir -p tests
-mkdir -p logs
-
-# Verify structure
-ls -la  # See all directories created
-```
-
-You should see:
-```
-.
-├── helper_functions/
+job-scraper-etl/
+├── job_scrape.py                 # Main web scraper
+├── helper_functions/             # 9 modular extraction functions
 ├── notebooks/
-├── config/
-├── docs/
+│   ├── 01_bronze_load.py         # Bronze layer (raw data ingestion)
+│   ├── 02_silver_cleaning.py     # Silver layer (validation & cleaning)
+│   └── 03_gold_aggregations.sql  # Gold layer (analytics views)
 ├── tests/
-├── logs/
-├── README.md
-├── .gitignore
-└── LICENSE
+│   └── test_helper_functions.py  # 35+ pytest tests
+├── docs/
+│   ├── ARCHITECTURE.md           # Detailed architecture
+│   ├── SETUP_GUIDE.md           # Step-by-step setup
+│   └── TROUBLESHOOTING.md       # Common issues & fixes
+├── .github/workflows/
+│   └── tests.yml                 # GitHub Actions CI/CD
+├── requirements.txt              # Python dependencies
+├── .env.example                  # Configuration template
+├── run_job.sh                    # CRON-schedulable runner
+└── .gitignore                    # Git ignore rules
 ```
 
----
+## 🚀 Quick Start
 
-## Step 4: Create Configuration Files
-
-### 4.1 Create requirements.txt
-```bash
-cat > requirements.txt << 'EOF'
-# Web Scraping
-playwright==1.40.0
-beautifulsoup4==4.12.2
-
-# Azure Storage & Authentication
-azure-identity==1.14.0
-azure-storage-blob==12.19.0
-
-# Configuration Management
-python-dotenv==1.0.0
-
-# Data Processing
-pandas==2.1.3
-
-# Utilities
-requests==2.31.0
-
-# Development & Testing (Optional)
-pytest==7.4.3
-black==23.11.0
-flake8==6.1.0
-EOF
-```
-
-Verify it was created:
-```bash
-cat requirements.txt
-```
-
-### 4.2 Create .env.example
-```bash
-cat > .env.example << 'EOF'
-# ================================================================
-# Azure Storage Configuration
-# ================================================================
-TENANT_ID=your-azure-tenant-id-here
-CLIENT_ID=your-service-principal-app-id-here
-CLIENT_SECRET=your-service-principal-password-here
-
-STORAGE_ACCOUNT_NAME=yourstorageaccount
-CONTAINER_NAME=jobscrape-landing
-
-# ================================================================
-# Web Scraper Configuration
-# ================================================================
-MAX_PAGES=5
-DELAY_BETWEEN_PAGES=1.0
-
-# ================================================================
-# Logging Configuration (Optional)
-# ================================================================
-LOG_LEVEL=INFO
-EOF
-```
-
-Verify:
-```bash
-cat .env.example
-```
-
-### 4.3 Create .gitignore (enhanced)
-Since GitHub already created a basic `.gitignore`, enhance it:
+### Local Setup (Web Scraper)
 
 ```bash
-cat >> .gitignore << 'EOF'
-
-# ================================================================
-# CRITICAL: Never commit credentials or sensitive data
-# ================================================================
-.env
-.env.local
-.env.*.local
-
-# ================================================================
-# Project Specific
-# ================================================================
-data/
-*.csv
-*.xlsx
-job_scrape.log
-logs/
-
-# Browser data from Playwright
-.playwright/
-*.db
-EOF
-```
-
----
-
-## Step 5: Create Main Python Script File
-
-### 5.1 Create job_scrape.py (stub)
-```bash
-cat > job_scrape.py << 'EOF'
-# Required libraries
-from playwright.sync_api import sync_playwright
-from bs4 import BeautifulSoup
-from datetime import datetime
-import time
-import os
-
-# Access helper functions
-from helper_functions.addresses import extract_addresses
-from helper_functions.application_deadline import extract_expiration_date
-from helper_functions.contract_type import extract_type
-from helper_functions.expected_tech import extract_expected_technologies
-from helper_functions.job_level import extract_level
-from helper_functions.job_requirements import extract_requirements
-from helper_functions.job_responsibilities import extract_responsibilities
-from helper_functions.salary_info import extract_salary_details
-from helper_functions.save_results_adls import save_results
-
-# Verify Azure credentials are available
-required_env_vars = ["TENANT_ID", "CLIENT_ID", "CLIENT_SECRET", "STORAGE_ACCOUNT_NAME", "CONTAINER_NAME"]
-missing_vars = [var for var in required_env_vars if not os.getenv(var)]
-if missing_vars:
-    raise ValueError(f"Missing required environment variables: {missing_vars}")
-
-print("✅ Azure credentials loaded from environment variables")
-
-def scrape_theprotocol_jobs(max_pages: int = 5, delay: float = 1.0):
-    """
-    Scrape job listings from TheProtocol.it using Playwright (handles dynamic content).
-    Returns a list of dicts with structured job data.
-    
-    Args:
-        max_pages: Maximum number of pages to scrape
-        delay: Delay in seconds between page requests
-    """
-    # Implementation here
-    pass
-
-if __name__ == "__main__":
-    try:
-        jobs = scrape_theprotocol_jobs(max_pages=5, delay=1.0)
-        save_results(jobs)
-        print("\n✅ Job scraping and upload completed successfully")
-    except Exception as e:
-        print(f"\n❌ Fatal error: {e}")
-        raise
-EOF
-```
-
----
-
-## Step 6: Create Notebook Files
-
-### 6.1 Create Databricks Notebooks
-```bash
-cat > notebooks/01_bronze_load.py << 'EOF'
-# Databricks notebook source
-"""
-Bronze Layer: Raw Data Ingestion
-Batch load using CSV from ADLS to Bronze Delta table
-"""
-
-# Implementation here
-
-print("✅ Bronze layer loaded successfully")
-EOF
-```
-
-```bash
-cat > notebooks/02_silver_cleaning.py << 'EOF'
-# Databricks notebook source
-"""
-Silver Layer: Data Cleaning & Validation
-"""
-
-# Implementation here
-
-print("✅ Silver layer cleaned successfully")
-EOF
-```
-
-```bash
-cat > notebooks/03_gold_aggregations.sql << 'EOF'
--- Databricks notebook source
--- Gold Layer: Business-Ready Aggregations
-
--- Implementation here
-
-SELECT 'Gold layer created successfully' AS status;
-EOF
-```
-
----
-
-## Step 7: Create Documentation Files
-
-### 7.1 Create ARCHITECTURE.md
-```bash
-cat > docs/ARCHITECTURE.md << 'EOF'
-# Architecture Overview
-
-## Data Flow
-
-Local Machine → ADLS → Databricks → Gold Layer
-
-### Components
-
-1. **job_scrape.py** (Local)
-   - Scrapes TheProtocol.it daily via CRON
-   - Outputs CSV to ADLS landing zone
-
-2. **01_bronze_load.py** (Databricks)
-   - Triggered on file arrival
-   - Loads raw CSV to Bronze Delta table
-
-3. **02_silver_cleaning.py** (Databricks)
-   - Validates and cleans data
-   - Loads to Silver Delta table
-
-4. **03_gold_aggregations.sql** (Databricks)
-   - Creates business-ready views
-   - Aggregations and reporting layer
-EOF
-```
-
-### 7.2 Create SETUP_GUIDE.md
-```bash
-cat > docs/SETUP_GUIDE.md << 'EOF'
-# Setup Guide
-
-## Local Setup
-
-1. Clone repository
-2. Create virtual environment: `python -m venv venv`
-3. Activate: `source venv/bin/activate`
-4. Install dependencies: `pip install -r requirements.txt`
-5. Configure `.env` from `.env.example`
-6. Run scraper: `python job_scrape.py`
-
-## Databricks Setup
-
-1. Create cluster with Runtime 13.3 LTS+
-2. Upload notebooks to workspace
-3. Create catalog and schemas
-4. Set up file arrival trigger
-EOF
-```
-
----
-
-## Step 8: Check Git Status
-
-Before committing, see what files have been created/modified:
-
-```bash
-git status
-```
-
-You should see something like:
-```
-On branch main
-Changes not staged for commit:
-  modified:   .gitignore
-  modified:   README.md
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-        .env.example
-        requirements.txt
-        job_scrape.py
-        helper_functions/
-        notebooks/
-        config/
-        docs/
-        tests/
-        logs/
-```
-
----
-
-## Step 9: Add Files to Git Staging
-
-```bash
-# Add all changes
-git add .
-
-# Or add specific files
-git add requirements.txt .env.example job_scrape.py notebooks/ docs/
-
-# Verify what's staged
-git status
-```
-
-All files should now show as "Changes to be committed" (in green)
-
----
-
-## Step 10: Create First Commit
-
-```bash
-git commit -m "Initial project setup with structure and configuration files"
-```
-
-Better commit message format:
-```bash
-git commit -m "feat: Initialize job scraper ETL project
-
-- Add project structure with helper functions, notebooks, and docs
-- Add requirements.txt with dependencies
-- Add .env.example for configuration template
-- Add Databricks notebooks for Bronze, Silver, and Gold layers
-- Add architecture and setup documentation"
-```
-
-Verify the commit:
-```bash
-git log --oneline
-```
-
----
-
-## Step 11: Push to GitHub
-
-```bash
-# Push your commits to GitHub
-git push origin main
-```
-
-If you get an authentication prompt:
-- Use Personal Access Token (recommended) or GitHub password
-- Or configure SSH keys (see GitHub docs)
-
-Success message:
-```
-Enumerating objects: 15, done.
-Counting objects: 100% (15/15), done.
-Writing objects: 100% (15/15), 1.23 KiB | 1.23 MiB/s, done.
-Total 15 (delta 5), reused 0 (delta 0)
-To https://github.com/yourusername/job-scraper-etl.git
-   abc123..def456  main -> main
-```
-
----
-
-## Step 12: Verify on GitHub
-
-1. Go to https://github.com/yourusername/job-scraper-etl
-2. Refresh the page
-3. You should see your files and folder structure
-4. Click on commits to see your commit history
-
-✅ **Success! Your project is now on GitHub!**
-
----
-
-## Common Commands Reference
-
-```bash
-# Check status
-git status
-
-# Add all changes
-git add .
-
-# Add specific file
-git add filename.py
-
-# Commit changes
-git commit -m "Your message here"
-
-# Push to GitHub
-git push origin main
-
-# Pull latest changes from GitHub
-git pull origin main
-
-# View commit history
-git log --oneline
-
-# View what changed in last commit
-git show
-
-# Undo last commit (keep changes locally)
-git reset --soft HEAD~1
-```
-
----
-
-## Next Steps
-
-After your initial push:
-
-1. **Add your actual code files** to replace stubs
-2. **Update README.md** with real instructions
-3. **Add collaborators** if working with a team
-4. **Enable GitHub Pages** for documentation
-5. **Set up branch protection** for main branch
-6. **Add GitHub Actions** for CI/CD (optional but impressive!)
-
----
-
-## Troubleshooting
-
-### "fatal: not a git repository"
-```bash
-# Make sure you're in the repo directory
+# Clone repository
+git clone https://github.com/Stephen137/job-scraper-etl.git
 cd job-scraper-etl
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure credentials
+cp .env.example .env
+# Edit .env with your Azure credentials
+
+# Run scraper
+python job_scrape.py
 ```
 
-### "Permission denied (publickey)"
-You need to set up SSH keys. Use HTTPS instead:
+### Databricks Setup (Cloud Transformation)
+
+1. **Create Cluster**: Runtime 13.3 LTS or later
+2. **Create Catalog & Schemas**:
+   ```sql
+   CREATE CATALOG IF NOT EXISTS jobscrape;
+   CREATE SCHEMA IF NOT EXISTS jobscrape.bronze;
+   CREATE SCHEMA IF NOT EXISTS jobscrape.silver;
+   CREATE SCHEMA IF NOT EXISTS jobscrape.gold;
+   ```
+3. **Upload Notebooks**: `notebooks/01_*.py`, `02_*.py`, `03_*.sql`
+4. **Set Up File Arrival Trigger**: 
+   - Path: `/Volumes/jobscrape/landing/jobscrape_data/`
+   - Pattern: `*.csv`
+   - Tasks: Bronze → Silver → Gold (sequential)
+
+## 🧪 Testing
+
+Run the test suite locally:
+
 ```bash
-git remote set-url origin https://github.com/yourusername/job-scraper-etl.git
+# Run all tests
+python -m pytest tests/ -v
+
+# Run with coverage
+pytest tests/ --cov=helper_functions --cov-report=html
+
+# Run specific test file
+pytest tests/test_helper_functions.py -v
 ```
 
-### "failed to push some refs"
-Your local is out of sync. Pull first:
-```bash
-git pull origin main
-git push origin main
-```
+**Test Coverage:**
+- 10 tests for `extract_addresses`
+- 11 tests for `extract_type`
+- 11 tests for `extract_level`
+- 3 integration tests
+- Total: 35 tests ✅
 
-### Files not showing on GitHub
-Make sure they were added and committed:
-```bash
-git add .
-git commit -m "Add files"
-git push origin main
-```
+Tests run automatically on every push via GitHub Actions!
+
+## 🔄 Data Flow
+
+### 1. Local Scraper (CRON Scheduled)
+- Runs daily via `run_job.sh`
+- Scrapes TheProtocol.it job listings
+- Generates timestamped CSV: `the_it_protocol_jobs_YYYYMMdd_HHmmss.csv`
+- Uploads to ADLS landing zone
+
+### 2. Bronze Layer (Triggered on File Arrival)
+- Loads raw CSV to Bronze Delta table
+- Adds metadata: ingestion timestamp, source file, processing date
+- Latest file selection by timestamp
+- No transformations (preserve raw data)
+
+### 3. Silver Layer (Data Validation)
+- Validates required fields
+- Enforces data quality rules
+- Logs dropped records with failure reasons
+- Bronze-to-Silver reconciliation
+- Returns cleaned, validated data
+
+### 4. Gold Layer (Analytics)
+- Creates business-ready views
+- Aggregations by job level, company, technology
+- Salary analysis
+- No data modification, only curated views
+
+## 📊 Data Quality
+
+The pipeline includes built-in validation:
+- **Required fields**: job_listing_id, job_title, company_name, job_level, contract_type
+- **Dropped records logging**: Tracks all failures with reasons
+- **Reconciliation checks**: Bronze → Silver record count verification
+- **Data quality notebook**: SQL queries for analysis and monitoring
+
+## 🔐 Security & Configuration
+
+- **Credentials**: Managed via environment variables (`.env` not committed)
+- **Template**: `.env.example` shows required variables
+- **RBAC**: Azure ADLS with role-based access control
+- **Secrets**: Use Databricks Secrets for sensitive data in notebooks
+
+## 📚 Documentation
+
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Detailed technical architecture
+- **[SETUP_GUIDE.md](docs/SETUP_GUIDE.md)** - Step-by-step setup instructions
+- **[TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** - Common issues & solutions
+
+## 🤝 Contributing
+
+1. Create a feature branch: `git checkout -b feature/my-feature`
+2. Make changes and test: `pytest tests/ -v`
+3. Commit with clear messages: `git commit -m "feat: description"`
+4. Push and create a Pull Request
+
+## 📈 Monitoring & Logs
+
+### Local Logs
+- `logs/job_scrape.log` - Web scraper execution logs
+- Check for `⚠️ Error extracting data from detail page` warnings
+
+### Databricks Logs
+- Workflow run history in Databricks UI
+- Query `jobscrape.silver.dropped_records_log` for data quality issues
+- Review timestamps: `_bronze_ingestion_time`, `_silver_transformation_time`
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+## 👤 Author
+
+[Stephen Barrie](https://github.com/Stephen137)
+- GitHub: [@Stephen137](https://github.com/Stephen137)
+- LinkedIn: [Your LinkedIn]
+
+## 🎯 Next Steps
+
+- [x] Web scraper with error handling
+- [x] Databricks medallion architecture
+- [x] Data validation and quality checks
+- [x] Automated testing (35+ tests)
+- [x] GitHub Actions CI/CD
+- [ ] Code coverage dashboard (Codecov)
+- [ ] Performance benchmarking
+- [ ] Additional job sites integration
+
+## 📞 Support
+
+For issues, questions, or suggestions:
+1. Check [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+2. Review existing [GitHub Issues](https://github.com/Stephen137/job-scraper-etl/issues)
+3. Create a new issue with details
+
+---
+
+**Happy scraping! 🚀**
