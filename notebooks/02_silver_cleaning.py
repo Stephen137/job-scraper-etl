@@ -143,14 +143,28 @@ df = df.withColumn("expiration_date",
 
 print("✓ Transformed: expiration_date")
 
+df = df.withColumn("job_posting_date", 
+                   to_date(convert_date_udf(col("job_posting_date")), "yyyy-MM-dd"))
+
+print("✓ Transformed: job_posting_date")
+
 # COMMAND ----------
 
-# ===== TRANSFORMATION 2: Days Until Expiry =====
+# ===== TRANSFORMATION 2a: Days Until Expiry =====
 
 df = df.withColumn("days_left", 
                    datediff(col("expiration_date"), current_date()))
 
 print("✓ Added: days_left column")
+
+# COMMAND ----------
+
+# ===== TRANSFORMATION 2b: Days Since Posted =====
+
+df = df.withColumn("days_since_posted", 
+                  datediff(current_date(), col("job_posting_date")))
+
+print("✓ Added: days_since_posted column")
 
 # COMMAND ----------
 
@@ -333,11 +347,11 @@ print(f"✓ Filtered expired listings: {df_before_filter} → {df_after_filter} 
 # ===== REORDER COLUMNS =====
 
 column_order = [
-    "job_listing_id", "company_name", "job_title", "days_left", "expected_technologies", 
+    "job_listing_id", "days_since_posted", "company_name", "job_title", "days_left", "expected_technologies", 
     "min_salary", "max_salary", "min_salary_mth", "max_salary_mth", "min_salary_hr", "max_salary_hr",
     "frequency", "location", "address_1", "address_2", 
     "contract_type", "job_level", "work_mode", "responsibilities", "requirements", 
-    "ingestion_date", "ingestion_timestamp", "expiration_date", "remuneration", "job_url",
+    "ingestion_date", "ingestion_timestamp", "job_posting_date", "expiration_date", "remuneration", "job_url",
     "source_file"
 ]
 
