@@ -82,7 +82,7 @@
      - `notebooks/01_bronze_load.py`
      - `notebooks/02_silver_cleaning.py`
      - `notebooks/03_gold_aggregations.sql`
-     - `notebooks/04_jobs_expiring_soon.sql`
+    
      
    ### 4. Create File Arrival Trigger Job
    1. Go to Workflows (left sidebar)
@@ -96,7 +96,6 @@
       - Task 1: Run `01_bronze_load.py`
       - Task 2: Run `02_silver_cleaning.py` (depends on Task 1)
       - Task 3: Run `03_gold_aggregations.sql` (depends on Task 2)
-      - Task 4: Run `04_jobs_expiring_soon.sql` (depends on Task 3)
    5. Save and activate
 
    ### 5. Verify Setup
