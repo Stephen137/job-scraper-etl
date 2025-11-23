@@ -183,9 +183,10 @@ SELECT
         ELSE 'More than 2 weeks left'
     END as expiry_status
 FROM jobscrape.silver.jobs_cleaned
+WHERE days_left < 7
 ORDER BY days_left ASC;
 
-SELECT * FROM v_jobs_expiring_soon LIMIT 20;
+SELECT * FROM v_jobs_expiring_soon
 
 -- COMMAND ----------
 
@@ -255,9 +256,10 @@ SELECT
       ELSE 'More than 2 weeks old - what are you waiting for?'
     END as posting_status
 FROM jobscrape.silver.jobs_cleaned
+WHERE days_since_posted < 7
 ORDER BY days_since_posted ASC;
 
-SELECT * FROM v_jobs_just_posted LIMIT 20;
+SELECT * FROM v_jobs_just_posted;
 
 -- COMMAND ----------
 
