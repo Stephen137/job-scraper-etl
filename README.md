@@ -36,8 +36,7 @@ job-scraper-etl/
 ├── notebooks/
 │   ├── 01_bronze_load.py         # Bronze layer (raw data ingestion)
 │   ├── 02_silver_cleaning.py     # Silver layer (validation & cleaning)
-│   └── 03_gold_aggregations.sql  # Gold layer (analytics views)
-|   └── 04_jobs_expiring_soon.sql # Gold layer (jobs expiring within 3 days)
+│   └── 03_gold_aggregations.sql  # Gold layer (analytics views)|   
 |   
 ├── tests/
 │   └── test_helper_functions.py  # 35+ pytest tests
