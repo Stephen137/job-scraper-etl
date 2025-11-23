@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/Stephen137/job-scraper-etl/actions/workflows/tests.yml/badge.svg)](https://github.com/Stephen137/job-scraper-etl/actions/workflows/tests.yml)
 
-**Production-grade ETL pipeline** that automates job market intelligence collection from https://theprotocol.it/ and provides up to date job market analysis. Built a full-stack data engineering solution combining local web scraping with cloud-based data warehouse transformation. 
+**Production-grade ETL pipeline** that automates job market intelligence collection from https://theprotocol.it/ and provides up to date job market analytics. Who's hiring? Which technologies are in demand? How much am I worth? A full-stack data engineering solution combining local web scraping with cloud-based data warehouse transformation. 
 
 ## 🚀 Quick Overview
 
