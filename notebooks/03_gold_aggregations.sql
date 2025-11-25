@@ -277,8 +277,8 @@ SELECT 'Total Active Listings', CAST((SELECT COUNT(*) FROM jobscrape.silver.jobs
 UNION ALL
 SELECT 'Listings with Salary Data', CAST((SELECT COUNT(*) FROM jobscrape.silver.jobs_cleaned WHERE min_salary IS NOT NULL) AS STRING)
 UNION ALL
-SELECT 'Top Location', (SELECT location FROM jobs_by_location ORDER BY job_count DESC LIMIT 1)
+SELECT 'Top Location', (SELECT location FROM v_jobs_by_location ORDER BY job_count DESC LIMIT 1)
 UNION ALL
-SELECT 'Most Common Work Mode', (SELECT work_mode FROM jobs_by_work_mode ORDER BY job_count DESC LIMIT 1)
+SELECT 'Most Common Work Mode', (SELECT work_mode FROM v_jobs_by_work_mode ORDER BY job_count DESC LIMIT 1)
 UNION ALL
-SELECT 'Top Technology', (SELECT technology FROM top_technologies ORDER BY job_count DESC LIMIT 1);
+SELECT 'Top Technology', (SELECT technology FROM v_top_technologies ORDER BY job_count DESC LIMIT 1);
